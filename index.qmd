@@ -1,4 +1,4 @@
-# Introduction/ to be adjusted
+# to be adjusted
 The Treatment Episode Data Set - Admissions (TEDS-A) provides rich, standardized data on individuals admitted to substance use treatment facilities across the United States. I chose this dataset because it offers a comprehensive view of the demographic, clinical, and socio-economic characteristics of individuals seeking help for substance use disorders. Substance use is a critical public health issue, with profound implications for individuals, families, and communities.
 
 By analyzing this dataset, I aim to uncover patterns and trends in substance use and treatment access, which could help identify gaps in the system, inform public policy, and improve treatment outcomes.
