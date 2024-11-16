@@ -1,1 +1,32 @@
-# Introduction
+# Introduction/ to be adjusted
+The Treatment Episode Data Set - Admissions (TEDS-A) provides rich, standardized data on individuals admitted to substance use treatment facilities across the United States. I chose this dataset because it offers a comprehensive view of the demographic, clinical, and socio-economic characteristics of individuals seeking help for substance use disorders. Substance use is a critical public health issue, with profound implications for individuals, families, and communities.
+
+By analyzing this dataset, I aim to uncover patterns and trends in substance use and treatment access, which could help identify gaps in the system, inform public policy, and improve treatment outcomes.
+
+Research Questions
+Some questions that guide my analysis include:
+
+Demographic Patterns:
+
+What are the demographic characteristics (e.g., age, gender, race) of individuals admitted to substance use treatment?
+Are there observable disparities in treatment access across different populations?
+Substance Use Trends:
+
+What are the most commonly reported substances leading to treatment admission, and how do they vary by demographic factors?
+How does the age of first use correlate with the type and frequency of substance use?
+Treatment and Outcomes:
+
+What are the most common types of treatment services provided, and how do they vary across regions?
+Does the use of medication-assisted treatments (MATs) differ based on the type of substance?
+Socio-Economic Correlations:
+
+How do employment status, income sources, or living arrangements correlate with the severity of substance use or treatment outcomes?
+Context for Readers
+Substance use disorders (SUDs) affect millions of individuals worldwide. These disorders are characterized by an inability to control the use of substances despite adverse consequences. Commonly abused substances include alcohol, opioids, stimulants, and marijuana. The opioid crisis, in particular, has highlighted the urgent need for effective interventions.
+
+The TEDS-A dataset, collected by the Substance Abuse and Mental Health Services Administration (SAMHSA), serves as a vital resource for understanding trends in substance use and treatment services. It includes data on admissions to state-licensed treatment facilities, focusing on factors such as demographics, substance use history, and the type of treatment received.
+
+Analyzing this dataset provides insights into the scope of substance use issues and the efficacy of current treatment approaches. This understanding can support efforts to design better-targeted interventions, allocate resources more effectively, and reduce the societal burden of substance use disorders.
+
+Personal Motivation (Optional Section)
+I am particularly interested in this topic because of its direct relevance to public health and the opportunity it provides to use data-driven approaches to address real-world challenges. The interplay between socio-economic factors, demographic characteristics, and substance use patterns fascinates me, as it offers a window into systemic inequalities and areas for improvement in healthcare delivery.
