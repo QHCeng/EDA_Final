@@ -6,11 +6,11 @@ execute:
   echo: true
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "EDA Final Project on TEDS"
   author:
-    - AUTHOR1 (UNI1)
+    - Qinghui Zeng (qz2548)
     - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+  repo-url: https://github.com/QHCeng/EDA_Final
   date: today
   page-footer:
     right: |
