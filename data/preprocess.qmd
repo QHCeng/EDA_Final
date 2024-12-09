@@ -9,9 +9,191 @@ data_n <- data |>
   mutate(across(where(is.labelled), as.numeric))
 data_clean <- data_n |>
   filter_all(all_vars(. != -9)) 
-
+age_groups <- c(
+  "12-14 years old",
+  "15-17 years old",
+  "18-20 years old",
+  "21-24 years old",
+  "25-29 years old",
+  "30-34 years old",
+  "35-39 years old",
+  "40-44 years old",
+  "45-49 years old",
+  "50-54 years old",
+  "55-64 years old",
+  "65 years and older"
+)
+gender_labels <- c("Male", "Female")
+race_labels <- c(
+  "Alaska Native (Aleut, Eskimo, Indian)",
+  "American Indian (other than Alaska Native)",
+  "Asian or Pacific Islander",
+  "Black or African American",
+  "White",
+  "Asian",
+  "Other single race",
+  "Two or more races",
+  "Native Hawaiian or Other Pacific Islander"
+)
+marstat_labels <- c(
+  "Never married",
+  "Now married",
+  "Separated",
+  "Divorced, widowed"
+)
+data_clean$AGE <- factor(data_clean$AGE,
+  levels = 1:12,
+  labels = age_groups
+)
+data_clean$GENDER <- factor(data_clean$GENDER,
+  levels = 1:2,
+  labels = gender_labels
+)
+data_clean$RACE <- factor(data_clean$RACE,
+  levels = 1:9,
+  labels = race_labels
+)
+data_clean$MARSTAT <- factor(data_clean$MARSTAT,
+  levels = 1:4,
+  labels = marstat_labels
+)
+education_labels <- c(
+  "Less than one school grade, no schooling, nursery school, or kindergarten to Grade 8",
+  "Grades 9 to 11",
+  "Grade 12 (or GED)",
+  "1-3 years of college, university, or vocational school",
+  "4 years of college, university, BA/BS, some postgraduate study, or more"
+)
+data_clean$EDUC <- factor(data_clean$EDUC,
+  levels = 1:5,
+  labels = education_labels
+)
+employment_labels <- c(
+  "Full-time",
+  "Part-time",
+  "Unemployed",
+  "Not in labor force"
+)
+data_clean$EMPLOY <- factor(data_clean$EMPLOY,
+  levels = 1:4,
+  labels = employment_labels
+)
+livarag_labels <- c(
+  "Homeless",
+  "Dependent living",
+  "Independent living"
+)
+data_clean$LIVARAG <- factor(data_clean$LIVARAG,
+  levels = 1:3,
+  labels = livarag_labels
+)
+services_labels <- c(
+  "Detox, 24-hour, hospital inpatient",
+  "Detox, 24-hour, free-standing residential",
+  "Rehab/residential, hospital (non-detox)",
+  "Rehab/residential, short term (30 days or fewer)",
+  "Rehab/residential, long term (more than 30 days)",
+  "Ambulatory, intensive outpatient",
+  "Ambulatory, non-intensive outpatient",
+  "Ambulatory, detoxification"
+)
+data_clean$SERVICES <- factor(data_clean$SERVICES,
+  levels = 1:8,
+  labels = services_labels
+)
+methuse_labels <- c(
+  "Yes",
+  "No"
+)
+data_clean$METHUSE <- factor(data_clean$METHUSE,
+  levels = 1:2,
+  labels = methuse_labels
+)
+daywait_labels <- c(
+  "0",
+  "1-7",
+  "8-14",
+  "15-30",
+  "31 or more"
+)
+data_clean$DAYWAIT <- factor(data_clean$DAYWAIT,
+  levels = 0:4,
+  labels = daywait_labels
+)
+drug_labels <- c(
+  "None",
+  "Alcohol",
+  "Cocaine/crack",
+  "Marijuana/hashish",
+  "Heroin",
+  "Non-prescription methadone",
+  "Other opiates and synthetics",
+  "PCP",
+  "Hallucinogens",
+  "Methamphetamine/speed",
+  "Other amphetamines",
+  "Other stimulants",
+  "Benzodiazepines",
+  "Other tranquilizers",
+  "Barbiturates",
+  "Other sedatives or hypnotics",
+  "Inhalants",
+  "Over-the-counter medications",
+  "Other drugs"
+)
+data_clean$SUB1 <- factor(data_clean$SUB1,
+  levels = 1:19,
+  labels = drug_labels
+)
+freq1_labels <- c(
+  "No use in the past month",
+  "Some use",
+  "Daily use"
+)
+data_clean$FREQ1 <- factor(data_clean$FREQ1,
+  levels = 1:3,
+  labels = freq1_labels
+)
+frstuse1_labels <- c(
+  "11 years and under",
+  "12-14 years",
+  "15-17 years",
+  "18-20 years",
+  "21-24 years",
+  "25-29 years",
+  "30 years and older"
+)
+data_clean$FRSTUSE1 <- factor(data_clean$FRSTUSE1,
+  levels = 1:7,
+  labels = frstuse1_labels
+)
+dsmcrit_labels <- c(
+  "Alcohol-induced disorder",
+  "Substance-induced disorder",
+  "Alcohol intoxication",
+  "Alcohol dependence",
+  "Opioid dependence",
+  "Cocaine dependence",
+  "Cannabis dependence",
+  "Other substance dependence",
+  "Alcohol abuse",
+  "Cannabis abuse",
+  "Other substance abuse",
+  "Opioid abuse",
+  "Cocaine abuse",
+  "Anxiety disorders",
+  "Depressive disorders",
+  "Schizophrenia/other psychotic disorders",
+  "Bipolar disorders",
+  "Attention deficit/disruptive behavior disorders",
+  "Other mental health condition"
+)
+data_clean$DSMCRIT <- factor(data_clean$DSMCRIT,
+  levels = 1:19,
+  labels = dsmcrit_labels
+)
 head(data_clean)
 write.csv(data_clean, "data_clean.csv", row.names = FALSE)
-nrow(data_clean)
+
 ```
 
