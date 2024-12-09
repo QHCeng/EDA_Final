@@ -1,4 +1,4 @@
-The data we use in this project is TEDS-A dataset, and the time period we use is year 2021. The link for this dataset is https://www.samhsa.gov/data/data-we-collect/teds/datafiles.
+The data we use in this project is TEDS-A dataset, and the time period we use is year 2021. The link for this dataset is https://www.samhsa.gov/data/data-we-collect/teds/datafiles. 
 
 For this project, we propose using the Treatment Episode Data Set - Admissions (TEDS-A), 2021, which is managed by the Substance Abuse and Mental Health Services Administration (SAMHSA). This dataset exclusively contains records of substance use treatment admissions that occurred in the year 2021 across the United States. The data is collected by state agencies from state-licensed or certified treatment centers that receive public funding. It encompasses both administrative details and self-reported information from individuals at the time of admission, making it a valuable resource for studying substance use treatment trends.
 
