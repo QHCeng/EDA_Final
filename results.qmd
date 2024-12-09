@@ -1,12 +1,43 @@
 # Results
 ```{r}
 library(ggplot2)
+library(dplyr)
+library(forcats)
 
-data <- read.csv("./data/data_clean.csv")
+data <- read.csv("./data/data_clean.csv", stringsAsFactors = TRUE)
 ```
 Explanation of variables:MARSTAT is the marriage status, LIVARAG is Living arrangements
 SERVICE is Type of treatment service/setting, METHUSE is whether the use of opioid medications, DSMCRIT is the reason for a client's encounter or treatment
 ```{r}
 head(data)
 ```
+First we want to see the basic distribution for the age of data:
+```{r}
+ggplot(data, aes(x = AGE)) + 
+  geom_bar(stat = "count", fill = "skyblue") + 
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.3) +
+  theme_minimal() +
+  labs(x = "Age", y = "Count")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+From which we can see most of individuals are within 18-64 age.
+And gender:
+```{r}
+ggplot(data, aes(x = GENDER)) + 
+  geom_bar(stat = "count", fill = "#FF5733") + 
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.3) +
+  theme_minimal() +
+  labs(x = "Age", y = "Count")
+```
+The variable SUB1 identifies the client's primary substance abuse at admission. The basic distribution is:
+```{r}
+data$SUB1 <- fct_infreq(data$SUB1)
+ggplot(data, aes(x = SUB1)) + 
+  geom_bar(stat = "count", fill = "skyblue") + 
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.3) +
+  theme_minimal() +
+  labs(x = "Age", y = "Count")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 
