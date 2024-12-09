@@ -6,9 +6,80 @@ The dataset is provided in multiple formats, including SAS, SPSS, Stata, R, and 
 
 For processing and analysis, we will exclusively use R. We plan to utilize the tidyverse suite of packages for data cleaning, manipulation, and visualization. The haven package will be used to import the dataset, allowing seamless handling of SPSS or Stata formats. Additionally, dplyr will be employed for filtering, grouping, and summarizing the data, while ggplot2 will be used to visualize trends and relationships. Comprehensive documentation provided by SAMHSA, including user manuals and crosswalks, will ensure that variables are accurately interpreted and used appropriately in the analysis. The dataset and its documentation are publicly available through SAMHSA’s official data portal.
 
+```{r}
+load("tedsa_puf_2021_r.rdata")
+```
+
+```{r}
+library(haven)
+
+tedsa_puf_2021_r <- as.data.frame(lapply(tedsa_puf_2021_r, function(col) {
+  if (inherits(col, "haven_labelled")) {
+    haven::as_factor(col)  
+  } else {
+    col
+  }
+}))
+```
+
 While the TEDS-A dataset provides extensive coverage of treatment admissions in 2021, it has several limitations due to missing or incomplete data. Some variables contain a significant proportion of missing values, coded as -9 to denote unknown, invalid, or uncollected data. For example, the pregnancy status variable is missing for 68.8% of cases, primarily because this variable is not applicable to male clients. Employment status has 17.0% missing data, likely reflecting cases where the information was unavailable or not collected. Similarly, frequency of substance use for primary substances has 18.8% missing values. These missing data points can pose challenges for analysis by reducing the reliability of certain conclusions.
 
-Additionally, reporting practices vary across states, which can lead to discrepancies. For instance, some states exclude data from private or hospital-based facilities, while others omit specific populations such as those in correctional institutions. These differences must be considered when interpreting the dataset, as they may affect representativeness and comparability between states.
+In the graph below, -9 represents missing data in the dataset.
+```{r}
+library(ggplot2)
+library(dplyr)
+
+calculate_proportions <- function(data, column) {
+  data |>
+    group_by(across(all_of(column))) |>
+    summarise(count = n(), .groups = "drop") |>
+    mutate(proportion = count / sum(count) * 100,
+           variable = column)
+}
+
+variables <- c("EMPLOY", "PREG", "FREQ1")
+
+for (var in variables) {
+  plot_data <- calculate_proportions(tedsa_puf_2021_r, var)
+  
+  plot <- ggplot(plot_data, aes_string(x = var, y = "proportion", fill = var)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    labs(title = paste("Proportions of Categories in", var), 
+         x = "Category", 
+         y = "Proportion (%)") +
+    theme_minimal(base_size = 14) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  print(plot)
+}
+```
+
+```{r}
+tedsa_puf_2021_r[tedsa_puf_2021_r == -9] <- NA
+```
+```{r}
+library(naniar)
+library(ggplot2)
+
+missing_summary <- colSums(is.na(tedsa_puf_2021_r)) / nrow(tedsa_puf_2021_r) * 100
+missing_data <- data.frame(
+  Variable = names(missing_summary),
+  MissingPercentage = missing_summary
+)
+
+ggplot(missing_data, aes(x = reorder(Variable, -MissingPercentage), y = MissingPercentage, fill = Variable)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  labs(
+    title = "Missing Data Distribution by Variable",
+    x = "Variable",
+    y = "Missing Percentage (%)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(size = 6, angle = 45, hjust = 1), 
+    axis.text.y = element_text(size = 8) 
+  )
+```
 
 To address missing data, we will use a systematic approach within R. For categorical variables like pregnancy status and employment status, we will create a separate category for missing values. This ensures that missing data is accounted for without distorting distributions through imputation. For numerical variables, such as age at first use or days waiting for treatment, we will analyze patterns of missingness and decide on appropriate imputation methods. For instance, if the missing values are randomly distributed, we may use the median or mode for imputation. However, for variables where more than 50% of values are missing, such as detailed criminal justice referral, these variables may be excluded from certain analyses to prevent introducing bias.
 
