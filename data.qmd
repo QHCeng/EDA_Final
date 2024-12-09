@@ -20,11 +20,12 @@ tedsa_puf_2021_r <- as.data.frame(lapply(tedsa_puf_2021_r, function(col) {
     col
   }
 }))
+
+tedsa_puf_2021_r[tedsa_puf_2021_r == -9] <- NA
 ```
 
-While the TEDS-A dataset provides extensive coverage of treatment admissions in 2021, it has several limitations due to missing or incomplete data. Some variables contain a significant proportion of missing values, coded as -9 to denote unknown, invalid, or uncollected data. For example, the pregnancy status variable is missing for 68.8% of cases, primarily because this variable is not applicable to male clients. Employment status has 17.0% missing data, likely reflecting cases where the information was unavailable or not collected. Similarly, frequency of substance use for primary substances has 18.8% missing values. These missing data points can pose challenges for analysis by reducing the reliability of certain conclusions.
+While the TEDS-A dataset provides extensive coverage of treatment admissions in 2021, it has several limitations due to missing or incomplete data. Some variables contain a significant proportion of missing values, invalid, or uncollected data. For example, employment status has 17.0% missing data, likely reflecting cases where the information was unavailable or not collected. Similarly, frequency of substance use for primary substances has 18.8% missing values. These missing data points can pose challenges for analysis by reducing the reliability of certain conclusions.
 
-In the graph below, -9 represents missing data in the dataset.
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -37,7 +38,7 @@ calculate_proportions <- function(data, column) {
            variable = column)
 }
 
-variables <- c("EMPLOY", "PREG", "FREQ1")
+variables <- c("EMPLOY", "FREQ1")
 
 for (var in variables) {
   plot_data <- calculate_proportions(tedsa_puf_2021_r, var)
@@ -53,15 +54,22 @@ for (var in variables) {
   print(plot)
 }
 ```
-
 ```{r}
-tedsa_puf_2021_r[tedsa_puf_2021_r == -9] <- NA
+library(redav)
+library(ggplot2)
+
+cols_to_keep <- c("AGE", "GENDER", "RACE", "MARSTAT", "EDUC", "EMPLOY", "LIVARAG", "SERVICES", 
+                  "METHUSE", "DAYWAIT", "SUB1", "FREQ1", "FRSTUSE1", "DSMCRIT")
+tedsa_puf_2021_r_new <- tedsa_puf_2021_r[ , cols_to_keep]
+
+plot_missing(tedsa_puf_2021_r_new, max_rows=5, max_cols=7)
 ```
+
 ```{r}
 library(naniar)
 library(ggplot2)
 
-missing_summary <- colSums(is.na(tedsa_puf_2021_r)) / nrow(tedsa_puf_2021_r) * 100
+missing_summary <- colSums(is.na(tedsa_puf_2021_r_new)) / nrow(tedsa_puf_2021_r_new) * 100
 missing_data <- data.frame(
   Variable = names(missing_summary),
   MissingPercentage = missing_summary
@@ -76,10 +84,12 @@ ggplot(missing_data, aes(x = reorder(Variable, -MissingPercentage), y = MissingP
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    axis.text.x = element_text(size = 6, angle = 45, hjust = 1), 
+    axis.text.x = element_text(size = 10, angle = 45, hjust = 1), 
     axis.text.y = element_text(size = 8) 
   )
 ```
+
+
 
 To address missing data, we will use a systematic approach within R. For categorical variables like pregnancy status and employment status, we will create a separate category for missing values. This ensures that missing data is accounted for without distorting distributions through imputation. For numerical variables, such as age at first use or days waiting for treatment, we will analyze patterns of missingness and decide on appropriate imputation methods. For instance, if the missing values are randomly distributed, we may use the median or mode for imputation. However, for variables where more than 50% of values are missing, such as detailed criminal justice referral, these variables may be excluded from certain analyses to prevent introducing bias.
 
