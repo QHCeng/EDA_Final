@@ -1,1 +1,12 @@
 # Results
+```{r}
+library(ggplot2)
+
+data <- read.csv("./data/data_clean.csv")
+```
+Explanation of variables:MARSTAT is the marriage status, LIVARAG is Living arrangements
+SERVICE is Type of treatment service/setting, METHUSE is whether the use of opioid medications, DSMCRIT is the reason for a client's encounter or treatment
+```{r}
+head(data)
+```
+

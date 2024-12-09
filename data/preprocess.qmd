@@ -1,0 +1,17 @@
+```{r}
+library(dplyr)
+library(haven)
+load("./rawdata.rdata")
+cols_to_keep <- c("AGE", "GENDER", "RACE", "MARSTAT", "EDUC", "EMPLOY", "LIVARAG", "SERVICES", 
+                  "METHUSE", "DAYWAIT", "SUB1", "FREQ1", "FRSTUSE1", "DSMCRIT")
+data <- tedsa_puf_2021_r[ , cols_to_keep]
+data_n <- data |>
+  mutate(across(where(is.labelled), as.numeric))
+data_clean <- data_n |>
+  filter_all(all_vars(. != -9)) 
+
+head(data_clean)
+write.csv(data_clean, "data_clean.csv", row.names = FALSE)
+nrow(data_clean)
+```
+
