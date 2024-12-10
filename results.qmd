@@ -59,6 +59,14 @@ For further insight, we decide to look into the four main abuse type and it's as
 When it comes to characteristic difference, race of respondents is always an important factor. Taking the four main races, we try to find out it's association with abuse type.
 
 ```{r}
+data_top4_all <- data |>
+  mutate(across(everything(), ~ {
+    top4 <- names(sort(table(.x), decreasing = TRUE))[1:4]
+    ifelse(.x %in% top4, as.character(.x), NA)
+  }))
+```
+
+```{r}
 mosaic(~ RACE + SUB1, 
        data = data_top4_all,
        direction = c("v", "h"),  
@@ -122,13 +130,7 @@ From the heat map, the “White” category shows significantly high usage level
 
 The second factor is employment status, which connects to individual's economic status strongly, thus has an impact on someone's consumption that they afford specific drug, or they become addicted because of poverty. We try to verify which statement is correct according to this dataset.
 
-```{r}
-data_top4_all <- data |>
-  mutate(across(everything(), ~ {
-    top4 <- names(sort(table(.x), decreasing = TRUE))[1:4]
-    ifelse(.x %in% top4, as.character(.x), NA)
-  }))
-```
+
 
 ```{r}
 mosaic(~ EMPLOY + SUB1, 
