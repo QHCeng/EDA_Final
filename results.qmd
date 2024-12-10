@@ -3,6 +3,11 @@
 library(ggplot2)
 library(dplyr)
 library(forcats)
+library(ggalluvial)
+library(RColorBrewer)
+library(scales)
+library(vcd)
+library(grid)
 
 data <- read.csv("./data/data_clean.csv", stringsAsFactors = TRUE)
 ```
@@ -27,7 +32,7 @@ ggplot(data, aes(x = GENDER)) +
   geom_bar(stat = "count", fill = "#FF5733") + 
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.3) +
   theme_minimal() +
-  labs(x = "Age", y = "Count")
+  labs(x = "Gender", y = "Count")
 ```
 The variable SUB1 identifies the client's primary substance abuse at admission. The basic distribution is:
 ```{r}
@@ -36,8 +41,253 @@ ggplot(data, aes(x = SUB1)) +
   geom_bar(stat = "count", fill = "skyblue") + 
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.3) +
   theme_minimal() +
-  labs(x = "Age", y = "Count")+
+  labs(x = "Substance", y = "Count")+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+```{r}
+data_top4_all <- data |>
+  mutate(across(everything(), ~ {
+    top4 <- names(sort(table(.x), decreasing = TRUE))[1:4]
+    ifelse(.x %in% top4, as.character(.x), NA)
+  }))
+```
+
+```{r}
+mosaic(~ EMPLOY + SUB1, 
+       data = data_top4_all,
+       direction = c("v", "h"),  
+       gp_labels = gpar(fontsize = 7),
+       gp_varnames = gpar(fontsize = 9),
+       main_gp = gpar(fontsize = 15),
+       labeling_args = list(
+         set_varnames = c(EMPLOY = "EMPLOY", SUB1 = "Substances"),
+         rot_labels = c(left = 0)
+         ),
+       margins = unit(c(1, 1, 1, 5), "lines"),
+       gp = gpar(fill = c("lightblue", "lightblue", "lightblue", "lightblue", 
+                          "lightpink", "lightpink", "lightpink", "lightpink",
+                          "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1",
+                          "lightgreen", "lightgreen", "lightgreen", "lightgreen"))
+)
+```
+For the clearance of the mosaic plot, we will only consider the top 4 categories for Employ and substances. From this plot, it can be seen that except alcohol seems to have an obviously larger proportion in Full-time category, other proportions seem similar in the mosaic plot. However, we still need to use the stacked bar chat to check if the total amount of substance usage corresponds with employment status.
+
+```{r}
+ggplot(data, aes(x = EMPLOY, fill = SUB1)) +
+  geom_bar(position = "stack") +
+  labs(
+    x = "EMPLOY",
+    y = "Count"
+  ) +
+  scale_y_continuous(labels = comma) +
+  scale_fill_discrete(name = NULL) +
+  guides(fill = guide_legend(ncol = 2)) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1, size = 8),
+    legend.text = element_text(size = 8),
+    legend.title = element_text(size = 10),
+  )
+```
+The stacked bar chart illustrates how the primary substance used varies across different employment status. It is not surprising that Unemployed corresponds to the highest number of substances used. However, it is surprising that Part-time has the lowest substance usage, and the usage is much lower than all other categories. We guess this may be correlated with working pressure, since Full-time and Not in labor force may have much higher working pressure than part-time. 
+
+```{r}
+table_1 <- table(data$EMPLOY, data$SUB1)
+df_table_1 <- as.data.frame(table_1)
+colnames(df_table_1) <- c("EMPLOY", "SUB1", "Freq")
+```
+```{r}
+ggplot(df_table_1, aes(x = EMPLOY, y = SUB1, fill = Freq)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(
+    x = "EMPLOY",
+    y = "Substances",
+    fill = "Count"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_text(size = 8)
+  )
+```
+From the heatmap, we can see that certain substances, such as Alcohol and Heroin, have relatively higher counts among the Unemployed and Not in labor force groups compared to others. In contrast, categories like Cocaine/crack or Barbiturates are used less frequently across all employment categories, resulting in lighter-colored cells. Also, it can be seen that the density for Part-time are low for all substances.
+
+```{r}
+mosaic(~ RACE + SUB1, 
+       data = data_top4_all,
+       direction = c("v", "h"),  
+       gp_labels = gpar(fontsize = 7),
+       gp_varnames = gpar(fontsize = 9),
+       main_gp = gpar(fontsize = 15),
+       labeling_args = list(
+         set_varnames = c(RACE = "RACE", SUB1 = "Substances"),
+         rot_labels = c(left = 0, top = 20)
+         ),
+       margins = unit(c(1, 1, 1, 5), "lines"),
+       gp = gpar(fill = c("lightblue", "lightblue", "lightblue", "lightblue", 
+                          "lightpink", "lightpink", "lightpink", "lightpink",
+                          "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1",
+                          "lightgreen", "lightgreen", "lightgreen", "lightgreen"))
+)
+```
+For the clearance of the mosaic plot, we will only consider the top 4 categories for Race and substances. From this plot, it can be seen that alcohol seems to have an obviously larger proportion in American Indian (other than Alaska Native) category and heroin has an obviously smaller proportion in American Indian (other than Alaska Native). In White, heroin has a smaller proportion compare to Black or African American and Other single race. Therefore, we think there is some correlation between RACE and Substance usage, and we can still use the stacked bar chat to check if the total amount of substance usage corresponds with race.
+
+```{r}
+ggplot(data, aes(x = RACE, fill = SUB1)) +
+  geom_bar(position = "stack") +
+  labs(
+    x = "RACE",
+    y = "Count"
+  ) +
+  scale_fill_discrete(name = NULL) +
+  guides(fill = guide_legend(ncol = 2)) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1, size = 8),
+    legend.text = element_text(size = 8),
+    legend.title = element_text(size = 10),
+  )
+```
+The stacked bar chart illustrates how the primary substance used varies across different races. White stands out with the highest overall substance counts and the broadest variety of substances. Black or African American follows, with fewer counts but still a noticeable presence of several key substances. The group identified as American Indian (other than Alaska Native) ranks third, showing less but still noticeable use use of substances. 
+
+```{r}
+table_2 <- table(data$RACE, data$SUB1)
+df_table_2 <- as.data.frame(table_2)
+colnames(df_table_2) <- c("RACE", "SUB1", "Freq")
+```
+```{r}
+ggplot(df_table_2, aes(x = RACE, y = SUB1, fill = Freq)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(
+    x = "RACE",
+    y = "Substances",
+    fill = "Count"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8)
+  )
+```
+From the heat map, the “White” category shows significantly high usage levels for certain substances, whereas many other racial groups exhibit lighter-shaded cells, indicating lower frequencies.
+
+```{r}
+top_sub1 <- data |>
+  count(SUB1, sort = TRUE) |>
+  slice_head(n = 3) |>
+  pull(SUB1)
+
+data_top4_sub <- data |>
+  filter(SUB1 %in% top_sub1)
+
+data_top4_sub <- data_top4_sub |> droplevels()
+```
+
+```{r}
+mosaic(~ AGE + SUB1, 
+       data = data_top4_sub,
+       direction = c("v", "h"),  
+       gp_labels = gpar(fontsize = 6),
+       gp_varnames = gpar(fontsize = 9),
+       main_gp = gpar(fontsize = 15),
+       labeling_args = list(
+         set_varnames = c(AGE = "AGE", SUB1 = "Substances"),
+         rot_labels = c(left = 0, top = 30)
+         ),
+       margins = unit(c(1, 1, 1, 5), "lines"),
+       gp = gpar(fill = c("lightblue", "lightblue", "lightblue", "lightblue", "lightblue", "lightblue", "lightblue", "lightblue", "lightblue", "lightblue", "lightblue", "lightblue",
+                          "lightpink", "lightpink", "lightpink", "lightpink", "lightpink", "lightpink", "lightpink", "lightpink", "lightpink", "lightpink", "lightpink", "lightpink",
+                          "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1", "peachpuff1",
+                          "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen", "lightgreen"))
+)
+```
+For the clearance of the mosaic plot, we will only consider the top 4 categories for substances. From this plot, it can be seen that alcohol seems to have a larger proportion with the growth of age. Methamphetamine/speed and Other oplates and synthetics seems to have a smaller proportion with the growth of age. Therefore, we think age and substances usage are dependent. 
+
+```{r}
+ggplot(data, aes(x = AGE, fill = SUB1)) +
+  geom_bar(position = "stack") +
+  labs(
+    x = "AGE",
+    y = "Count"
+  ) +
+  scale_fill_discrete(name = NULL) +
+  guides(fill = guide_legend(ncol = 2)) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    legend.text = element_text(size = 8),
+    legend.title = element_text(size = 10)
+  )
+```
+The stacked bar chart illustrates how the primary substance used varies across different age groups. The middle-age ranges (around 30–39 years old) show the highest counts and a diverse mix of substances. Younger age groups (e.g., 12–20 years old) have lower overall counts, with fewer substance types represented. Older age groups (50 years and above) still demonstrate a variety of substances, but each substance tends to make up a smaller proportion compared to the middle-aged peak. This suggests that the middle-age range may be a period of particularly high diversity and intensity of substance use, while both younger and older groups show more limited but still distinct patterns of substance preferences. 
+
+```{r}
+table_3 <- table(data$AGE, data$SUB1)
+df_table_3 <- as.data.frame(table_3)
+colnames(df_table_3) <- c("AGE", "SUB1", "Freq")
+```
+```{r}
+ggplot(df_table_3, aes(x = AGE, y = SUB1, fill = Freq)) +
+  geom_tile(color = "white") + 
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(
+    x = "AGE",
+    y = "Substances",
+    fill = "Count"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8)
+  )
+```
+From the heat map, among all substances, alcohol, heroin, Marijuana/hashish, Methamphetamine/speed, and Other opiates and synthetics are substances that are used the most. Also, age range from around 25 to 65 are the range that has most substances usage. 
+
+```{r}
+set.seed(123) 
+sample_size <- floor(0.005 * nrow(data))
+sample_data <- data[sample(nrow(data), size = sample_size), ]
+
+top_educ <- sample_data |>
+  count(EDUC, sort = TRUE) |>
+  slice_head(n = 3) |>
+  pull(EDUC)
+
+top_sub1 <- sample_data |>
+  count(SUB1, sort = TRUE) |>
+  slice_head(n = 4) |>
+  pull(SUB1)
+
+sample_data_sub <- sample_data |>
+  filter(EDUC %in% top_educ, SUB1 %in% top_sub1)
+```
+```{r}
+ggplot(sample_data_sub, 
+       aes(axis1 = GENDER, axis2 = EDUC, axis3 = SUB1, y = 1, fill = EDUC)) +
+  geom_alluvium(width = 1/12, knot.pos = 0.5, alpha = 0.7) +
+  geom_stratum(width = 1/12, color = "black") +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3) +
+  scale_x_discrete(labels = c("GENDER", "EDUC", "SUB1")) +
+  scale_fill_brewer(palette = "Dark2") +
+  labs(
+    x = "Variables",
+    y = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "none"
+  )
+```
+For the convenience of calculation and the clearance of the graph, we randomly selected 0.5% of the data, select top 3 categories of EDUC and top 4 categories of SUB1.
+
+From the alluvial diagram, it can be observed that the distribution of educational attainment is quite similar between females and males, indicating that education level does not differ significantly by gender. At the same time, although the highest level of education is less common in the Marijuana/hashish category, the overall distribution of educational attainment across different substances is still quite similar. Overall, from the alluvia diagram suggests that neither gender nor educational background has a substantial impact on substance usage patterns, as the distribution appears uniform across all categories.
+
+
+
 
 
