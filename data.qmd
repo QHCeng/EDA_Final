@@ -7,6 +7,8 @@ The dataset is provided in multiple formats, including SAS, SPSS, Stata, R, and 
 For processing and analysis, we will exclusively use R. We plan to utilize the tidyverse suite of packages for data cleaning, manipulation, and visualization. The haven package will be used to import the dataset, allowing seamless handling of SPSS or Stata formats. Additionally, dplyr will be employed for filtering, grouping, and summarizing the data, while ggplot2 will be used to visualize trends and relationships. Comprehensive documentation provided by SAMHSA, including user manuals and crosswalks, will ensure that variables are accurately interpreted and used appropriately in the analysis. The dataset and its documentation are publicly available through SAMHSA’s official data portal.
 
 ```{r}
+library(redav)
+library(ggplot2)
 load("data/rawdata.rdata")
 ```
 
@@ -55,8 +57,7 @@ for (var in variables) {
 }
 ```
 ```{r}
-library(redav)
-library(ggplot2)
+
 
 cols_to_keep <- c("AGE", "GENDER", "RACE", "MARSTAT", "EDUC", "EMPLOY", "LIVARAG", "SERVICES", 
                   "METHUSE", "DAYWAIT", "SUB1", "FREQ1", "FRSTUSE1", "DSMCRIT")

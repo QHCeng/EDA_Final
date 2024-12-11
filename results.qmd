@@ -12,9 +12,7 @@ library(forcats)
 
 data <- read.csv("./data/data_clean.csv", stringsAsFactors = TRUE)
 ```
-```{r}
-head(data)
-```
+
 
 First we want to see the basic distribution for age of data:
 ```{r}
