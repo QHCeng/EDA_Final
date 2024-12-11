@@ -8,3 +8,10 @@ Furthermore, we verify our hypothesis that respondents become addicted because o
 Our third finding concerning respondents is methamphetamine has a young pattern--younger people are more easily to get addicted. So more effort is needed to educate, protect the minors and prevent addiction to drugs like methamphetamine from them.
 
 Finally another conclusion is about addictiveness of drugs listed here. Heroin and methamphetamine have strong addiction, people would have to keep a daily use frequency because of addiction compared to alcohol, so we should be extremely cautious about these drugs when we deal with them.
+
+There are some work could be done in the future:
+1.Expand the analysis to include longitudinal data for tracking addiction patterns over time. This dataset only contain one year data, so time pattern is hard to see.
+
+2.Investigate additional cultural and regional factors to further refine prevention strategies. During our research, our insight to these factors is still shallow, problems like how culture affects addiction in detail, from Behaviorally to mentally, could be studied more.
+
+3.Explore the role of mental health and social support systems in addiction prevention and recovery. In this work, content related to mental health is scarce. However, this is an important aspect when it comes to addiction. More work could be done to analysis it's effect on education, prevention and recovery.
