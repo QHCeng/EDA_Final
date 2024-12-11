@@ -8,6 +8,7 @@ library(RColorBrewer)
 library(scales)
 library(vcd)
 library(grid)
+library(forcats)
 
 data <- read.csv("./data/data_clean.csv", stringsAsFactors = TRUE)
 ```
@@ -65,7 +66,6 @@ data_top4_all <- data |>
     ifelse(.x %in% top4, as.character(.x), NA)
   }))
 ```
-
 ```{r}
 mosaic(~ RACE + SUB1, 
        data = data_top4_all,
@@ -94,7 +94,10 @@ data_summary_race <- data |>
 
 data$RACE <- factor(data$RACE, levels = data_summary_race$RACE)
 ```
-
+```{r}
+data <- data |>
+  mutate(SUB1 = fct_infreq(SUB1))
+```
 ```{r}
 ggplot(data, aes(x = RACE, fill = SUB1)) +
   geom_bar(position = "stack") +
