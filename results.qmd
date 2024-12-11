@@ -87,6 +87,15 @@ mosaic(~ RACE + SUB1,
 From this plot, it can be seen that there is some correlation between RACE and Substance usage: Indian are conservative about the use of drug, so they tend to drink alcohol much more than any other type. In contrast, while people are more open to the use of all kinds of drugs, so each has a similar proportion. So the opinions towards drugs are severely affected by culture, and we can still use the stacked bar chat to check if the total amount of substance usage corresponds with race.
 
 ```{r}
+data_summary_race <- data |>
+  group_by(RACE) |>
+  summarise(total_count = n()) |>
+  arrange(desc(total_count))
+
+data$RACE <- factor(data$RACE, levels = data_summary_race$RACE)
+```
+
+```{r}
 ggplot(data, aes(x = RACE, fill = SUB1)) +
   geom_bar(position = "stack") +
   labs(
@@ -151,6 +160,15 @@ mosaic(~ EMPLOY + SUB1,
 )
 ```
 From this plot, it can be seen that except alcohol seems to have an obviously larger proportion in Full-time category, other proportions seem similar in the mosaic plot. However, we still need to use the stacked bar chat to check if the total amount of substance usage corresponds with employment status. Alcohol is extremely high in full-time group, proving that our second guess "they become addicted because of poverty" makes more sense here.
+
+```{r}
+data_summary_employ <- data |>
+  group_by(EMPLOY) |>
+  summarise(total_count = n()) |>
+  arrange(desc(total_count))
+
+data$EMPLOY <- factor(data$EMPLOY, levels = data_summary_employ$EMPLOY)
+```
 
 ```{r}
 ggplot(data, aes(x = EMPLOY, fill = SUB1)) +
@@ -227,6 +245,7 @@ mosaic(~ AGE + SUB1,
 )
 ```
 From this plot, it can be seen that alcohol is extremely used in both end of age, young or old. Heroin becomes prevalent in adult. And what's most important is methamphetamine has a young pattern--young people are more easily to get addicted, which is another advice we get from this research.
+
 
 ```{r}
 ggplot(data, aes(x = AGE, fill = SUB1)) +
